@@ -1,9 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import api from '../../api';
+import { login } from '../../Redux/Features/user/userSlice';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../token';
 
 const Otp = () => {
+  const { id } = useParams(); 
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const navigate = useNavigate(); 
+  const dispatch = useDispatch(); 
+
+  const handleChange = (e, index) => {
+    const value = e.target.value;
+  
+    if (/^\d?$/.test(value)) {
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+  
+  
+      if (value && index < otp.length - 1) {
+        const nextInput = document.getElementById(`otp-${index + 1}`);
+        if (nextInput) {
+          nextInput.focus();
+        }
+      }
+    }
+  };
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
+
+    const emailOtp = otp.join('');
+    console.log("Submitting OTP:", emailOtp);
+
+    if (emailOtp.length === 6) {
+      try {
+        const response = await api.post(`api/user/verify_otp/${id}/`, {
+          email_otp: emailOtp,
+        });
+
+        if (response.status === 200) {
+          const { access, refresh, is_superuser } = response.data;
+
+          localStorage.setItem(ACCESS_TOKEN, access);
+          localStorage.setItem(REFRESH_TOKEN, refresh);
+          localStorage.setItem('admin', is_superuser); 
+
+          dispatch(login(response.data)); 
+          navigate('/home');
+        }
+      } catch (error) {
+        console.error('OTP verification failed:', error);
+        alert('Invalid OTP. Please try again.');
+      }
+    } else {
+      alert('Please enter a 6-digit OTP.');
+    }
+  };
+
   return (
     <div className="flex min-h-screen">
-      
       <div className="w-1/2 bg-green-300 text-white flex flex-col justify-center items-center p-10">
         <h1 className="text-5xl font-bold mb-4">Success Edge</h1>
         <p className="text-xl text-center px-4">Welcome to the E-Learning Platform</p>
@@ -16,13 +75,16 @@ const Otp = () => {
             Enter the 6-digit code sent to your phone
           </p>
 
-          <form className="space-y-6">
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex justify-between space-x-2">
-              {[...Array(6)].map((_, i) => (
+              {otp.map((value, i) => (
                 <input
                   key={i}
                   type="text"
                   maxLength="1"
+                  value={value}
+                  onChange={(e) => handleChange(e, i)}
                   className="w-12 h-12 text-center text-lg border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
                 />
               ))}
@@ -34,13 +96,6 @@ const Otp = () => {
             >
               Verify
             </button>
-
-            <p className="text-center text-sm text-gray-600">
-              Didn’t receive the code?{' '}
-              <button type="button" className="text-green-500 hover:underline font-medium">
-                Resend OTP
-              </button>
-            </p>
           </form>
         </div>
       </div>

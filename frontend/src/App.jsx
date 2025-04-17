@@ -1,19 +1,20 @@
-import React from 'react'
-import Form from './UserSide/Form/Form'
-import {BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom'
-import OTP from './UserSide/Otp/Otp'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Form from './UserSide/Form/Form';
+import OTP from './UserSide/Otp/Otp';
+import Home from './UserSide/Home/Home'
+
 const App = () => {
   return (
-    <div>
-      <Router>
-        <Routes>
-          <Route path='/Form' element={<Form/>}/>
-          <Route path='/OTP' element={<OTP/>}/>
+    <Router>
+      <Routes>
+        <Route path="/form" element={<Form />} />
+        <Route path="/otp/:id" element={<OTP />} />
+        <Route path="/home" element={<Home />} />
 
-        </Routes>
-      </Router>
-    </div>
-  )
-}
+      </Routes>
+    </Router>
+  );
+};
 
-export default App
+export default App;
