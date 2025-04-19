@@ -62,14 +62,14 @@ const Otp = () => {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <div className="w-1/2 bg-green-300 text-white flex flex-col justify-center items-center p-10">
+    <div className="flex min-h-screen bg-gradient-to-r from-green-100 to-blue-100">
+      <div className="w-1/2 flex flex-col justify-center items-center p-10 bg-gradient-to-tr from-green-400 to-blue-400 text-white rounded-tr-[4rem] rounded-br-[4rem] shadow-xl">
         <h1 className="text-5xl font-bold mb-4">Success Edge</h1>
         <p className="text-xl text-center px-4">Welcome to the E-Learning Platform</p>
       </div>
 
       <div className="w-1/2 flex justify-center items-center p-10 bg-gray-100">
-        <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+        <div className="bg-white rounded-2xl   w-full max-w-md">
           <h2 className="text-3xl font-bold mb-4 text-center text-gray-800">Verify OTP</h2>
           <p className="text-center text-sm text-gray-600 mb-6">
             Enter the 6-digit code sent to your phone
@@ -89,13 +89,14 @@ const Otp = () => {
                 />
               ))}
             </div>
-
+            
             <button
               type="submit"
-              className="w-full bg-green-300 text-white py-2.5 rounded-lg hover:bg-green-500 transition duration-300 font-medium"
+              className="w-full bg-green-500 text-white py-2.5 rounded-lg hover:bg-green-500 transition duration-300 font-medium"
             >
               Verify
             </button>
+            
           </form>
         </div>
       </div>
