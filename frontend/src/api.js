@@ -11,6 +11,7 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem(ACCESS_TOKEN);
+        
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -31,6 +32,7 @@ api.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem(REFRESH_TOKEN);
+                
                 const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/api/token/refresh/`, {
                     refresh: refreshToken,
                 });

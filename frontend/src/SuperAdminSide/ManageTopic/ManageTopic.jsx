@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../../api'
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../token';
 
 const ManageCourse = () => {
   const [showModal, setShowModal] = useState(false);
@@ -9,6 +10,7 @@ const ManageCourse = () => {
   });
 
   const openModal = () => setShowModal(true);
+  const [topics, setTopics] = useState([])
 
   const closeModal = () => {
     setFormData({ name: '', description: '' });
@@ -16,11 +18,18 @@ const ManageCourse = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target;        
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+ 
 
   const createTopic = async () => {
+    const access_token = localStorage.getItem(ACCESS_TOKEN);
+    const refresh_token = localStorage.getItem(REFRESH_TOKEN);
+
+    console.log('this is nihalaaaaaaa',access_token,"poda pulleee   ottakk food kazhikka")
+    console.log('this is shirinnnnnnnnn',refresh_token)
+
     const { name, description } = formData;
     if (name && description) {
       try {
@@ -43,6 +52,21 @@ const ManageCourse = () => {
     }
   };
 
+  const fetchTopics = async() => {
+    try{
+      const response = await api.get('/superadmin_app/admin/topiclist/');
+      if(response.status === 200){
+        setTopics(response.data)
+        console.log('Topics fetched:', adminList)
+      }
+    }catch{
+      console.error('Error fetching topics:',error);
+    }
+  }
+
+  useEffect(() => {
+    fetchTopics();
+  }, [])
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Manage Topics</h1>
@@ -57,13 +81,17 @@ const ManageCourse = () => {
           </tr>
         </thead>
         <tbody>
-          
-          <tr>
-            <td className="py-2 px-4 border">1</td>
-            <td className="py-2 px-4 border">Example Topic</td>
-            <td className="py-2 px-4 border">This is an example description.</td>
-            <td className="py-2 px-4 border">-</td>
+
+        {topics.map((topic,index) =>(
+          <tr key={topic.id}> 
+            <td className="py-2 px-4 border">{index+1}</td>
+            <td className="py-2 px-4 border">{topic.name}</td>
+            <td className="py-2 px-4 border">{topic.description}</td>
+            <td className="py-2 px-4 border"><button className='bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow'>Delete</button> <button className='bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md shadow'>Edit</button></td>
+            
           </tr>
+        ))}
+
         </tbody>
       </table>
 

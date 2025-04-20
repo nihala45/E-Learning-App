@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ACCESS_TOKEN } from '../../../token';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../../token';
 
 const initialState = {
   isAuthenticated: !!localStorage.getItem(ACCESS_TOKEN),
@@ -8,24 +8,27 @@ const initialState = {
     : null,
 };
 
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
     login(state, action) {
       const userData = action.payload;
-
+    
       state.isAuthenticated = true;
       state.user = userData;
-
-      localStorage.setItem(ACCESS_TOKEN, userData.token || '');
-      localStorage.setItem('user', JSON.stringify(userData));  
+    
+      localStorage.setItem(ACCESS_TOKEN, userData.access || '');
+      localStorage.setItem(REFRESH_TOKEN, userData.refresh || '');
+      localStorage.setItem('user', JSON.stringify(userData));
     },
     logout(state) {
       state.isAuthenticated = false;
       state.user = null;
 
       localStorage.removeItem(ACCESS_TOKEN);
+      localStorage.removeItem(REFRESH_TOKEN);
       localStorage.removeItem('user');
     },
   },

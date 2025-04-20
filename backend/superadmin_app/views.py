@@ -8,9 +8,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .serializer import TopicSerializer
-
-                                                                                                                                                                                                                                                                                                                                       
-
+from rest_framework import generics, permissions, status, viewsets, serializers
+from .models import Topic                                                                                                                                                                                                                                                                                                                                
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -23,23 +22,37 @@ class LoginView(APIView):
         
         if user is not None and user.is_superuser:
             refresh = RefreshToken.for_user(user)
-            
+            access = str(refresh.access_token) 
+            print('accessssssss', access)
             return Response({
                 'refresh': str(refresh),
-                'access': str(refresh.access_token),
+                'access': access,
                 'is_superuser': user.is_superuser
             })
         return Response({'detail': 'Invalid credentials or not an admin'}, status=status.HTTP_401_UNAUTHORIZED)
+
     
 class CreateTopicView(APIView):
-
     permission_classes = [IsAuthenticated, IsAdminUser]
-
     def post(self, request):
-        print('this is working')
+        auth_header = request.headers.get('Authorization')
+        print("Authorization Header:", auth_header)
+        name = request.data.get('name')
+        description = request.data.get('description')
+        print(name, description,'this is the things')
+        
         
         serializer = TopicSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'Task created successfully', 'task': serializer.data}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class TopicViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.IsAdminUser]
+    def list(self, request):
+        topics = Topic.objects.all()
+        serializer = TopicSerializer(topics, many=True)
+        return Response(serializer.data)
+
+    
