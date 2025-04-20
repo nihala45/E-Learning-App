@@ -3,7 +3,7 @@ from .views import LoginView, CreateTopicView, TopicViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r'admin/topiclist',TopicViewSet, basename='topic')
+router.register(r'admin/topiclist', TopicViewSet, basename='topic')
 
 
 
