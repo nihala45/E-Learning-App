@@ -7,6 +7,8 @@ import SuperAdminLogin from './SuperAdminSide/SuperAdminLogin/SuperAdminLogin';
 import SuperAdminHome from './SuperAdminSide/SuperAdminHome/SuperAdminHome';
 import Subjects from './SuperAdminSide/Subjects/Subjects';
 import Chapters from './SuperAdminSide/Chapters/Chapters';
+import TopicPage from './SuperAdminSide/TopicPage/TopicPage'
+import DetailsTopicPage from './SuperAdminSide/DetailsTopicPage/DetailsTopicPage';
 const App = () => {
   return (
     <Router>
@@ -18,6 +20,11 @@ const App = () => {
         <Route path="/superadminhome" element={<SuperAdminHome />} />
         <Route path="/subjects" element={<Subjects />} />
         <Route path="/chapters" element={<Chapters />} />
+        <Route path="/TopicPage/:id" element={<TopicPage />} />
+        <Route path="/DetailsTopicPage" element={<DetailsTopicPage />} />
+        
+
+
       </Routes>
     </Router>
   );

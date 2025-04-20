@@ -1,9 +1,10 @@
 from django.urls import path,include
-from .views import LoginView, CreateTopicView, TopicViewSet
+from .views import LoginView, CreateTopicView, TopicViewSet, CourseViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'admin/topiclist', TopicViewSet, basename='topic')
+router.register(r'admin/courselist', CourseViewSet, basename='course') 
 
 
 
