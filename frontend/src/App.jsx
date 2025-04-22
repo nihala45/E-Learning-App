@@ -20,8 +20,8 @@ const App = () => {
         <Route path="/superadminhome" element={<SuperAdminHome />} />
         <Route path="/subjects" element={<Subjects />} />
         <Route path="/chapters" element={<Chapters />} />
-        <Route path="/TopicPage/:id" element={<TopicPage />} />
-        <Route path="/DetailsTopicPage" element={<DetailsTopicPage />} />
+        <Route path="/TopicPage/:topicId" element={<TopicPage />} />
+        <Route path="/DetailsTopicPage/:chapterId" element={<DetailsTopicPage />} />
         
 
 

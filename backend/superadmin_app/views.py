@@ -7,9 +7,9 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .serializer import TopicSerializer, CourseSerializer
+from .serializer import TopicSerializer, CourseSerializer, ChapterSerializer, ChapterVideoSerializer, ChapterPDFSerializer
 from rest_framework import generics, permissions, status, viewsets, serializers
-from .models import Topic, Course                                                                                                                                                                                                                                                                                                                              
+from .models import Topic, Course, Chapter                                                                                                                                                                                                                                                                                                                         
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -136,3 +136,65 @@ class CourseViewSet(viewsets.ViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
         course.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ChapterViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.IsAdminUser]
+
+    def list(self, request):
+        chapters = Chapter.objects.all()
+        serializer = ChapterSerializer(chapters, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        try:
+            chapter = Chapter.objects.get(pk=pk)
+        except Chapter.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ChapterSerializer(chapter)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = ChapterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, pk=None):
+        try:
+            chapter = Chapter.objects.get(pk=pk)
+        except Chapter.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ChapterSerializer(chapter, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        try:
+            chapter = Chapter.objects.get(pk=pk)
+        except Chapter.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        chapter.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    
+
+    
+class UploadVideoView(APIView):
+    def post(self, request):
+        serializer = ChapterVideoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Video uploaded", "data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class UploadPDFView(APIView):
+    def post(self, request):
+        serializer = ChapterPDFSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "PDF uploaded", "data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

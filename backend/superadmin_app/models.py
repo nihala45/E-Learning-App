@@ -13,6 +13,9 @@ class Chapter(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     
+    class Meta:
+        unique_together = ('topic', 'title')
+    
     def __str__(self):
         return f"{self.topic.name} - {self.title}"
     
@@ -20,6 +23,7 @@ class Chapter(models.Model):
 class ChapterVideo(models.Model):
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='videos')
     video = models.FileField(upload_to='videos/')
+    name = models.CharField(max_length=255, unique=True)
     
     def __str__(self):
         return f"Video for {self.chapter.title}"
@@ -28,6 +32,7 @@ class ChapterVideo(models.Model):
 class ChapterPDF(models.Model):
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='pdfs')  # ✅ fixed variable name
     pdf = models.FileField(upload_to='pdfs/')
+    name = models.CharField(max_length=255, unique=True)
     
     def __str__(self):
         return f"PDF for {self.chapter.title}"  

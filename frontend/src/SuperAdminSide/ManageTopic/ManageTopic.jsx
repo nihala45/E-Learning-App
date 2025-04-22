@@ -11,7 +11,7 @@ const ManageCourse = () => {
 
   const navigate = useNavigate();
 
-  const goToCoursePage = (topicId) => {
+  const goToTopicPage = (topicId) => {
     navigate(`/TopicPage/${topicId}`);
   };
 
@@ -145,7 +145,7 @@ const ManageCourse = () => {
               <td className="py-3 px-4 border">
                 <button
                   className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-1 px-3 rounded transition duration-200"
-                  onClick={() => goToCoursePage(topic.id)}
+                  onClick={() => goToTopicPage(topic.id)}
                 >
                   Go to main page
                 </button>
